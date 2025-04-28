@@ -5,7 +5,7 @@ const parseEnv = () => {
   if (envs.length > 0) {
     resultString += envs[0] + "=" + process.env[envs[0]];
   }
-  for (let i=1; i< envs.length; i++) {
+  for (let i = 1; i < envs.length; i++) {
     resultString += `; ${envs[i]}=${process.env[envs[i]]}`;
   }
   console.log(resultString);
