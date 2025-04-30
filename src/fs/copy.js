@@ -24,6 +24,9 @@ const copy = async () => {
           const itemDestPath = path.resolve(destinationPath, file);
           if (itemStat.isFile()) {
             try {
+              await fsPromises.mkdir(path.dirname(itemDestPath), {
+                recursive: true,
+              });
               const rs = fs.createReadStream(itemPath);
               const ws = fs.createWriteStream(itemDestPath);
               rs.pipe(ws);
