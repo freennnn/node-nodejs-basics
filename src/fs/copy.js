@@ -2,6 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fsPromises from "fs/promises";
 import fs from "fs";
+import { pipeline } from "stream/promises";
 import * as utils from "./utils.js";
 
 const dirName = path.dirname(fileURLToPath(import.meta.url));
@@ -23,16 +24,12 @@ const copy = async () => {
           const itemStat = await fsPromises.stat(itemPath);
           const itemDestPath = path.resolve(destinationPath, file);
           if (itemStat.isFile()) {
-            try {
-              await fsPromises.mkdir(path.dirname(itemDestPath), {
-                recursive: true,
-              });
-              const rs = fs.createReadStream(itemPath);
-              const ws = fs.createWriteStream(itemDestPath);
-              rs.pipe(ws);
-            } catch (error) {
-              console.log(error);
-            }
+            await fsPromises.mkdir(path.dirname(itemDestPath), {
+              recursive: true,
+            });
+            const rs = fs.createReadStream(itemPath);
+            const ws = fs.createWriteStream(itemDestPath);
+            await pipeline(rs, ws);
           } else if (itemStat.isDirectory()) {
             await fsPromises.mkdir(itemDestPath, { recursive: true });
           }

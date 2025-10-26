@@ -9,12 +9,13 @@ const destinationPath = path.join(dirName, "files", "properFilename.md");
 
 const rename = async () => {
   try {
-    await fsPromises.open(destinationPath);
+    await fsPromises.access(destinationPath);
     throw Error(utils.fsErrorMsg);
   } catch (error) {
     if (error.message === utils.fsErrorMsg) {
       throw error;
     }
+    // destination does not exist (ENOENT) -> proceed
   }
   try {
     await fsPromises.rename(sourcePath, destinationPath);
