@@ -1,8 +1,5 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import { Transform, pipeline } from "stream";
-
-const dirName = path.dirname(fileURLToPath(import.meta.url));
+import { Transform } from "stream";
+import { pipeline } from "stream/promises";
 
 const reversify = new Transform({
   transform(chunk, enc, cb) {
@@ -13,9 +10,7 @@ const reversify = new Transform({
 });
 
 const transform = async () => {
-  pipeline(process.stdin, reversify, process.stdout, (err) => {
-    console.log(err);
-  });
+  await pipeline(process.stdin, reversify, process.stdout);
 };
 
 await transform();

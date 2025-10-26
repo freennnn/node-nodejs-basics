@@ -8,14 +8,9 @@ const sourcePath = path.join(dirName, "files");
 
 const list = async () => {
   try {
-    const files = await fsPromises.readdir(sourcePath, { recursive: true });
-    for (const file of files) {
-      const itemPath = path.resolve(sourcePath, file);
-      const itemStat = await fsPromises.stat(itemPath);
-      if (itemStat.isFile()) {
-        console.log(file);
-      }
-    }
+    const files = await fsPromises.readdir(sourcePath, { withFileTypes: true });
+    const onlyFiles = files.filter((d) => d.isFile()).map((d) => d.name);
+    console.log(onlyFiles);
   } catch (error) {
     throw Error(utils.fsErrorMsg);
   }
