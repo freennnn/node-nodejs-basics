@@ -3,7 +3,6 @@ import { fileURLToPath } from "url";
 
 import { release, version } from "os";
 import { createServer } from "http";
-import * as c from "./files/c.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
@@ -12,6 +11,9 @@ const random = Math.random();
 export let unknownObject;
 const dirName = path.dirname(fileURLToPath(import.meta.url));
 const fileName = path.basename(fileURLToPath(import.meta.url));
+
+// Ensure side-effect file is executed (CJS)
+require("./files/c.cjs");
 
 if (random > 0.5) {
   unknownObject = require("./files/a.json");
