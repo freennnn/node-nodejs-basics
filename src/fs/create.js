@@ -13,8 +13,8 @@ const create = async () => {
   // Write your code here
   // await writeWithWX(data)
   // await writeWithOpen(data)
-  await writeWithAccess(data)
-  // await writeWithStat(data)
+  // await writeWithAccess(data)
+  await writeWithStat(data)
 };
 
 await create();
@@ -89,23 +89,13 @@ async function writeWithWX(data) {
 async function writeWithStat(data) {
   try {
     await fs.stat(targetPath);
-    // file exists
+    // file exists -> throw our custom Error
     throw new Error(errorMessage);
   } catch (error) {
     if (error.code === "ENOENT") {
-      try {
-        await fs.writeFile(targetPath, data, { encoding: "utf8" });
-      } catch (err) {
-        console.error(`unexpected writeFile error: ${err}`)
-        // rethrow unexpected error
-        throw err
-      }
-    } else if (error.message === errorMessage) {
-      // rethrow out 'file exists' error
-      throw error;
+      await fs.writeFile(targetPath, data, { encoding: "utf8" })
     } else {
-      // unexpected stat error
-      console.error(`unexpected stat error: ${error}`)
+      // rethrow any OS errors other than ENOENT (like EACCES) and our custom Error
       throw error
     }
   }
