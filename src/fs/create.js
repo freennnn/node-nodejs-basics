@@ -1,4 +1,5 @@
 import fs from "node:fs/promises"
+import { constants as fsConstants } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -11,8 +12,8 @@ const errorMessage = 'FS operation failed'
 const create = async () => {
   // Write your code here
   // await writeWithWX(data)
-     await writeWithOpen(data)
-  // await writeWithAccess(data)
+  // await writeWithOpen(data)
+  await writeWithAccess(data)
   // await writeWithStat(data)
 };
 
@@ -56,13 +57,13 @@ async function writeWithOpen(data) {
 // 2) access() + writeToFile() - non-atomic, race condition prone
 async function writeWithAccess(data) {
   try {
-    await fs.access(targetPath, fs.constants.F_OK)
+    await fs.access(targetPath, fsConstants.F_OK)
     throw new Error(errorMessage)
   } catch (err) {
     if (err.code === 'ENOENT') {
       await fs.writeFile(targetPath, data)
     } else {
-      // rethrow our custom file exist error
+      // rethrow both our custom Error + any OS errors other than ENOENT (like EACCESS)
       throw err
     }
   }
