@@ -54,6 +54,19 @@ async function writeWithOpen(data) {
   }
 }
 
+//TODO: 1) new api to get dirPath - cleaner that fileURLToPath()
+//const filePath = join(import.meta.dirname, "files", "fresh.txt");
+//TODO: 2) boolean approach seems more elegant and clear
+/*try {
+   await access(filePath, constants.F_OK);
+   fileExists = true;
+ } catch (error) {
+   fileExists = false;
+ }
+
+ if (fileExists) throw new Error("FS operation failed");``
+*/
+
 // 2) access() + writeToFile() - non-atomic, race condition prone
 async function writeWithAccess(data) {
   try {
